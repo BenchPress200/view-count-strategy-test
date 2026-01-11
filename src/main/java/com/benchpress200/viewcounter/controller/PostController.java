@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
     private final PostService postService;
 
+    /*
+     * 게시글 생성
+     */
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(
             @RequestBody PostCreateRequest request
@@ -30,11 +33,27 @@ public class PostController {
                 .build();
     }
 
+    /*
+     * 게시글 조회 - JPA 변경 감지 조회수 업데이트
+     */
     @GetMapping("/posts/{postId}/basic")
     public ResponseEntity<?> getPostBasic(
             @PathVariable("postId") Long postId
     ) {
         PostResult result = postService.getPostBasic(postId);
+
+        return ResponseEntity.ok()
+                .body(result);
+    }
+
+    /*
+     * 게시글 조회 - 비관적 락 조회수 업데이트
+     */
+    @GetMapping("/posts/{postId}/pessimistic")
+    public ResponseEntity<?> getPostWithPessimisticLock(
+            @PathVariable("postId") Long postId
+    ) {
+        PostResult result = postService.getPostWithPessimisticLock(postId);
 
         return ResponseEntity.ok()
                 .body(result);

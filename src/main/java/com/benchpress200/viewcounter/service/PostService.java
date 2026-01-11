@@ -32,4 +32,14 @@ public class PostService {
         return PostResult.from(post);
     }
 
+    @Transactional
+    public PostResult getPostWithPessimisticLock(Long id) {
+        Post post = postRepository.findByIdWithPessimisticLock(id)
+                .orElseThrow();
+
+        post.incrementViewCount();
+
+        return PostResult.from(post);
+    }
+
 }
