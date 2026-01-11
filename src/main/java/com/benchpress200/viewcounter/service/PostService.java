@@ -1,16 +1,26 @@
 package com.benchpress200.viewcounter.service;
 
+import com.benchpress200.viewcounter.controller.request.PostCreateRequest;
 import com.benchpress200.viewcounter.domain.Post;
 import com.benchpress200.viewcounter.repository.PostRepository;
+import com.benchpress200.viewcounter.service.result.PostResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PostService {
     private final PostRepository postRepository;
+
+    @Transactional
+    public Long createPost(PostCreateRequest request) {
+        Post post = request.toEntity();
+        post = postRepository.save(post);
+
+        return post.getId();
+    }
+
 
     @Transactional
     public PostResult getPostBasic(Long id) {

@@ -1,4 +1,4 @@
-package com.benchpress200.viewcounter.service;
+package com.benchpress200.viewcounter.service.result;
 
 import com.benchpress200.viewcounter.domain.Post;
 import lombok.Getter;

@@ -1,3 +1,12 @@
+logging:
+  level:
+    org.hibernate.resource.jdbc.internal: trace # 커넥션 획득/반납 로그
+    org.springframework.orm.jpa: debug      # JPA 엔티티 매니저 이벤트
+    org.springframework.transaction: trace  # 스프링 트랜잭션 시작/커밋/롤백
+    com.zaxxer.hikari: debug
+    com.zaxxer.hikari.pool.HikariPool: trace # 커넥션 획득/반납/타임아웃 등 상세 이벤트
+    org.hibernate.orm.jdbc.bind: trace
+
 spring:
   application:
     name: view-counter
@@ -12,6 +21,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: create
+    show-sql: true
     properties:
       hibernate.format_sql: true
       hibernate:
