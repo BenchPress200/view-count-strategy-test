@@ -1,6 +1,7 @@
 package com.benchpress200.viewcounter.service.result;
 
 import com.benchpress200.viewcounter.domain.Post;
+import com.benchpress200.viewcounter.domain.PostWithVersion;
 import lombok.Getter;
 
 @Getter
@@ -20,6 +21,10 @@ public class PostResult {
     }
 
     public static PostResult from(Post post) {
+        return new PostResult(post.getId(), post.getTitle(), post.getViewCount());
+    }
+
+    public static PostResult from(PostWithVersion post) {
         return new PostResult(post.getId(), post.getTitle(), post.getViewCount());
     }
 }

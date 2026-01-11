@@ -2,9 +2,12 @@ package com.benchpress200.viewcounter.service;
 
 import com.benchpress200.viewcounter.controller.request.PostCreateRequest;
 import com.benchpress200.viewcounter.domain.Post;
+import com.benchpress200.viewcounter.domain.PostWithVersion;
 import com.benchpress200.viewcounter.repository.PostRepository;
+import com.benchpress200.viewcounter.repository.PostWithVersionRepository;
 import com.benchpress200.viewcounter.service.result.PostResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final PostWithVersionRepository postWithVersionRepository;
 
     @Transactional
     public Long createPost(PostCreateRequest request) {
         Post post = request.toEntity();
         post = postRepository.save(post);
+
+        return post.getId();
+    }
+
+    @Transactional
+    public Long createPostWithVersion(PostCreateRequest request) {
+        PostWithVersion post = request.toEntityWithVersion();
+        post = postWithVersionRepository.save(post);
 
         return post.getId();
     }
@@ -42,4 +54,21 @@ public class PostService {
         return PostResult.from(post);
     }
 
+    @Transactional
+    public PostResult getPostWithOptimisticLock(Long postId) {
+        return getPostWithVersion(postId);
+    }
+
+    private PostResult getPostWithVersion(Long id) {
+        try {
+            PostWithVersion post = postWithVersionRepository.findById(id)
+                    .orElseThrow();
+
+            post.incrementViewCount();
+
+            return PostResult.from(post);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            return getPostWithVersion(id);
+        }
+    }
 }
