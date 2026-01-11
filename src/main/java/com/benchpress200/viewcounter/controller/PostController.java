@@ -88,4 +88,17 @@ public class PostController {
         return ResponseEntity.ok()
             .body(result);
     }
+
+    /*
+     * 게시글 조회 - 원자적 쿼리 조회수 업데이트
+     */
+    @GetMapping("/posts/{postId}/atomic")
+    public ResponseEntity<?> getPostWithAtomic(
+            @PathVariable("postId") Long postId
+    ) {
+        PostResult result = postService.getPostWithAtomic(postId);
+
+        return ResponseEntity.ok()
+                .body(result);
+    }
 }

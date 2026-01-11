@@ -55,8 +55,18 @@ public class PostService {
     }
 
     @Transactional
-    public PostResult getPostWithOptimisticLock(Long postId) {
-        return getPostWithVersion(postId);
+    public PostResult getPostWithOptimisticLock(Long id) {
+        return getPostWithVersion(id);
+    }
+
+    @Transactional
+    public PostResult getPostWithAtomic(Long id) {
+        postRepository.incrementViewCount(id);
+
+        Post post = postRepository.findById(id)
+                .orElseThrow();
+
+        return PostResult.from(post);
     }
 
     private PostResult getPostWithVersion(Long id) {
