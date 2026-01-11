@@ -7,6 +7,7 @@ import com.benchpress200.viewcounter.repository.PostRepository;
 import com.benchpress200.viewcounter.repository.PostWithVersionRepository;
 import com.benchpress200.viewcounter.service.result.PostResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
     private final PostRepository postRepository;
     private final PostWithVersionRepository postWithVersionRepository;
+    private final RedisTemplate<String, Long> redisTemplate;
 
     @Transactional
     public Long createPost(PostCreateRequest request) {
@@ -65,6 +67,16 @@ public class PostService {
 
         Post post = postRepository.findById(id)
                 .orElseThrow();
+
+        return PostResult.from(post);
+    }
+
+    public PostResult getPostWithRedis(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow();
+
+        Long extraViewCount = redisTemplate.opsForValue().increment("post:view:" + id);
+        post.addViewCount(extraViewCount);
 
         return PostResult.from(post);
     }

@@ -36,4 +36,8 @@ public class Post {
     public void incrementViewCount() {
         viewCount++;
     }
+
+    public void addViewCount(Long viewCount) {
+        this.viewCount += viewCount;
+    }
 }

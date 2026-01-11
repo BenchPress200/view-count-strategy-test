@@ -101,4 +101,17 @@ public class PostController {
         return ResponseEntity.ok()
                 .body(result);
     }
+
+    /*
+     * 게시글 조회 - 레디스 조회수 업데이트
+     */
+    @GetMapping("/posts/{postId}/redis")
+    public ResponseEntity<?> getPostWithRedis(
+            @PathVariable("postId") Long postId
+    ) {
+        PostResult result = postService.getPostWithRedis(postId);
+
+        return ResponseEntity.ok()
+                .body(result);
+    }
 }
